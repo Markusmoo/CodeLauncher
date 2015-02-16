@@ -1,6 +1,7 @@
 package ca.tonsaker.codelauncher;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class ProjectLoader {
@@ -29,7 +30,14 @@ public class ProjectLoader {
 		if(!tempFile.exists()){
 			tempFile.mkdirs();
 		}else{
-			for(File f : tempFile.listFiles()){
+			for(File f : tempFile.listFiles(new FilenameFilter(){
+
+				@Override
+				public boolean accept(File e, String s) {
+					return s.toLowerCase().endsWith(".jar");
+				}
+				
+			})){
 				files.add(f);
 			}
 		}
