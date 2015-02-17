@@ -1,7 +1,14 @@
 package ca.tonsaker.codelauncher;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class ProjectLoader {
@@ -11,8 +18,8 @@ public class ProjectLoader {
 	
 	public ProjectLoader(String dir){
 		this.dir = dir;
-		loadFiles();
-		for(String s : getFileNames()) System.out.println(s);
+		this.loadFiles();
+		for(String s : getFileNames()) System.out.println("Loaded: "+s);
 	}
 
 	public String[] getFileNames(){
@@ -28,7 +35,7 @@ public class ProjectLoader {
 	public void loadFiles(){
 		File tempFile = new File(dir);
 		if(!tempFile.exists()){
-			tempFile.mkdirs();
+			return;
 		}else{
 			for(File f : tempFile.listFiles(new FilenameFilter(){
 
@@ -41,6 +48,38 @@ public class ProjectLoader {
 				files.add(f);
 			}
 		}
+	}
+	
+	public static boolean saveDir(String directory) throws IOException{
+		String pathDir = System.getenv("APPDATA")+"\\CodeLauncher";
+		String path = pathDir+"\\options.dat";
+		File file = new File(path);
+		if(!file.exists()){
+			File tmp = new File(pathDir);
+			if(!tmp.exists()) tmp.mkdirs(); 
+			file.createNewFile();
+		}
+		Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+		
+		writer.write(directory);
+		writer.flush();
+		writer.close();
+		
+		System.out.println("Directory saved to: "+path); 
+		return true;
+	}
+	
+	public static String loadDir() throws IOException{
+		String path = System.getenv("APPDATA")+"\\CodeLauncher\\options.dat";
+		FileInputStream file = new FileInputStream(path);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(file));
+		String loadedDir = reader.readLine();
+		
+		reader.close();
+		file.close();
+		
+		System.out.println("Directory loaded: "+path);
+		return loadedDir;
 	}
 	
 }
