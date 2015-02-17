@@ -82,7 +82,7 @@ public class CodeLauncherMain {
 		scroll.getViewport().setView(list_1);
 		frmMarkus.getContentPane().add(scroll);
 		
-		frmMarkus.pack();
+		//list_1.
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmMarkus.setJMenuBar(menuBar);
@@ -113,5 +113,7 @@ public class CodeLauncherMain {
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
+		
+		frmMarkus.pack();
 	}
 }
