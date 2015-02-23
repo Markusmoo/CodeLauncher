@@ -11,7 +11,9 @@ import javax.swing.JTree;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,9 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 	private JFrame frmMarkus;
 	private ProjectLoader pLoader;
 	private DefaultMutableTreeNode treeList;
-	JTree tree;
+	
+	private JTree tree;
+	private RSyntaxTextArea textArea;
 	
 	private JButton btnRun;
 	
@@ -111,7 +115,7 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		JPanel panel = new JPanel();
 		panel.setBounds(180, 11, 444, 536);
 		
-		RSyntaxTextArea textArea = new RSyntaxTextArea(33, 56);
+		textArea = new RSyntaxTextArea(33, 56);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
 		textArea.setEditable(false);
@@ -198,7 +202,8 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		
 		Project selProject;
 		boolean isJar;
-		File selFile;
+		File selFile = null;
+		
 		String sel = node.getUserObject().toString();
 
 		outerloop: for(Project pro : pLoader.projects){
@@ -218,6 +223,18 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 			}
 		}
 		
+		System.out.println(selFile);
+		
+		if(selFile != null && selFile.isFile() && selFile.getName().toLowerCase().contains(".java")){
+			textArea.setText("");
+			try(BufferedReader br = new BufferedReader(new FileReader(selFile))) {
+				for(String line; (line = br.readLine()) != null; ) {
+			    	textArea.append(line+"\n");
+			    }
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
 		//if() //TODO read source files and prep jar for running
 	}
 }
