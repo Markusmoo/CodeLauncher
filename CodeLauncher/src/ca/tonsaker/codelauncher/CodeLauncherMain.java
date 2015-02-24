@@ -34,6 +34,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.SpringLayout;
 
 
 public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
@@ -106,24 +107,22 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		frmMarkus = new JFrame();
 		frmMarkus.setIconImage(Toolkit.getDefaultToolkit().getImage(CodeLauncherMain.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
 		frmMarkus.setTitle("Markus Tonsaker's Code Launcher");
-		frmMarkus.setResizable(false);
-		frmMarkus.getContentPane().setLayout(null);
+		frmMarkus.setResizable(true);
 		frmMarkus.setPreferredSize(new Dimension(640, 640));
 		frmMarkus.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMarkus.setLocation(100, 100);
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(180, 11, 444, 536);
 		
 		textArea = new RSyntaxTextArea(33, 56);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
 		textArea.setEditable(false);
 		textArea.setText("No source available");
+		SpringLayout springLayout = new SpringLayout();
+		frmMarkus.getContentPane().setLayout(springLayout);
 		RTextScrollPane sp = new RTextScrollPane(textArea);
-		panel.add(sp);
-		
-		frmMarkus.getContentPane().add(panel);
+		springLayout.putConstraint(SpringLayout.NORTH, sp, 10, SpringLayout.NORTH, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, sp, -10, SpringLayout.EAST, frmMarkus.getContentPane());
+		frmMarkus.getContentPane().add(sp);
 		
 		//JList<String> tree = new JList<String>(pLoader.getJarFileNames());
 		tree = new JTree(); //TODO for appbuilder
@@ -133,12 +132,20 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		tree.setModel(new DefaultTreeModel(treeList));
 		
 		JScrollPane scroll = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scroll.setBounds(10, 11, 160, 570);
+		springLayout.putConstraint(SpringLayout.WEST, scroll, 10, SpringLayout.WEST, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, scroll, -10, SpringLayout.SOUTH, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, sp, 10, SpringLayout.EAST, scroll);
+		springLayout.putConstraint(SpringLayout.NORTH, scroll, 11, SpringLayout.NORTH, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, scroll, 170, SpringLayout.WEST, frmMarkus.getContentPane());
 		scroll.getViewport().setView(tree);
 		frmMarkus.getContentPane().add(scroll);
 		
 		btnRun = new JButton("Run");
-		btnRun.setBounds(180, 558, 444, 23);
+		springLayout.putConstraint(SpringLayout.NORTH, btnRun, -30, SpringLayout.SOUTH, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, btnRun, -10, SpringLayout.SOUTH, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, btnRun, -10, SpringLayout.EAST, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, sp, -10, SpringLayout.NORTH, btnRun);
+		springLayout.putConstraint(SpringLayout.WEST, btnRun, 180, SpringLayout.WEST, frmMarkus.getContentPane());
 		frmMarkus.getContentPane().add(btnRun);
 		btnRun.addActionListener(this);
 		
@@ -200,8 +207,7 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		
 		if(node == null) return;
 		
-		Project selProject;
-		boolean isJar;
+		Project selProject = null;
 		File selFile = null;
 		
 		String sel = node.getUserObject().toString();
@@ -210,14 +216,12 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 			if(pro.getJar().getName().equals(sel)){
 				selProject = pro;
 				selFile = pro.getJar();
-				isJar = true;
 				break;
 			}
 			for(File classFile : pro.getClasses()){
 				if(classFile.getName().equals(sel)){
 					selProject = pro;
 					selFile = classFile;
-					isJar = false;
 					break outerloop;
 				}
 			}
@@ -226,6 +230,7 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		System.out.println(selFile);
 		
 		if(selFile != null && selFile.isFile() && selFile.getName().toLowerCase().contains(".java")){
+			System.out.println(selProject.getZip());
 			textArea.setText("");
 			try(BufferedReader br = new BufferedReader(new FileReader(selFile))) {
 				for(String line; (line = br.readLine()) != null; ) {
@@ -235,6 +240,5 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 				e1.printStackTrace();
 			}
 		}
-		//if() //TODO read source files and prep jar for running
 	}
 }
