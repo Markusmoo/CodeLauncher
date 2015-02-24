@@ -12,6 +12,7 @@ import javax.swing.JTextPane;
 import ca.tonsaker.codelauncher.ProjectLoader.Project;
 import javax.swing.SpringLayout;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 public class ConsoleWindow implements Runnable{
 	
@@ -30,7 +31,7 @@ public class ConsoleWindow implements Runnable{
 		runThread = new Thread(this);
 	}
 	
-	/**
+	/** System("Beep");
 	 * @wbp.parser.entryPoint
 	 */
 	protected void initialiseGUI(){
@@ -40,7 +41,8 @@ public class ConsoleWindow implements Runnable{
 		SpringLayout springLayout = new SpringLayout();
 		frame.getContentPane().setLayout(springLayout);
 	
-		textPane = new JTextArea();
+		textPane = new JTextArea(16,58);
+		textPane.setBackground(UIManager.getColor("Button.darkShadow"));
 		scroll = new JScrollPane();
 		springLayout.putConstraint(SpringLayout.NORTH, scroll, 5, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, scroll, 5, SpringLayout.WEST, frame.getContentPane());

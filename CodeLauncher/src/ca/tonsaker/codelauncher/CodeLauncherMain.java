@@ -40,7 +40,7 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 
 	public static String FILE_DIR;
 	
-	private JFrame frmMarkus;
+	private JFrame frame;
 	private ProjectLoader pLoader;
 	private DefaultMutableTreeNode treeList;
 	
@@ -61,7 +61,7 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 			public void run() {
 				try {
 					CodeLauncherMain window = new CodeLauncherMain();
-					window.frmMarkus.setVisible(true);
+					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -105,13 +105,13 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmMarkus = new JFrame();
-		frmMarkus.setIconImage(Toolkit.getDefaultToolkit().getImage(CodeLauncherMain.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
-		frmMarkus.setTitle("Markus Tonsaker's Code Launcher");
-		frmMarkus.setResizable(true);
-		frmMarkus.setPreferredSize(new Dimension(640, 640));
-		frmMarkus.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmMarkus.setLocation(100, 100);
+		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(CodeLauncherMain.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
+		frame.setTitle("Markus Tonsaker's Code Launcher");
+		frame.setResizable(true);
+		frame.setPreferredSize(new Dimension(640, 640));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocation(100, 100);
 		
 		textArea = new RSyntaxTextArea(33, 56);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
@@ -119,11 +119,11 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		textArea.setEditable(false);
 		textArea.setText("No source available");
 		SpringLayout springLayout = new SpringLayout();
-		frmMarkus.getContentPane().setLayout(springLayout);
+		frame.getContentPane().setLayout(springLayout);
 		RTextScrollPane sp = new RTextScrollPane(textArea);
-		springLayout.putConstraint(SpringLayout.NORTH, sp, 10, SpringLayout.NORTH, frmMarkus.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, sp, -10, SpringLayout.EAST, frmMarkus.getContentPane());
-		frmMarkus.getContentPane().add(sp);
+		springLayout.putConstraint(SpringLayout.NORTH, sp, 10, SpringLayout.NORTH, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, sp, -10, SpringLayout.EAST, frame.getContentPane());
+		frame.getContentPane().add(sp);
 		
 		//JList<String> tree = new JList<String>(pLoader.getJarFileNames());
 		tree = new JTree(); //TODO for appbuilder
@@ -133,25 +133,25 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		tree.setModel(new DefaultTreeModel(treeList));
 		
 		JScrollPane scroll = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		springLayout.putConstraint(SpringLayout.WEST, scroll, 10, SpringLayout.WEST, frmMarkus.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, scroll, -10, SpringLayout.SOUTH, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, scroll, 10, SpringLayout.WEST, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, scroll, -10, SpringLayout.SOUTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, sp, 10, SpringLayout.EAST, scroll);
-		springLayout.putConstraint(SpringLayout.NORTH, scroll, 11, SpringLayout.NORTH, frmMarkus.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, scroll, 170, SpringLayout.WEST, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.NORTH, scroll, 11, SpringLayout.NORTH, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, scroll, 170, SpringLayout.WEST, frame.getContentPane());
 		scroll.getViewport().setView(tree);
-		frmMarkus.getContentPane().add(scroll);
+		frame.getContentPane().add(scroll);
 		
 		btnRun = new JButton("Run");
-		springLayout.putConstraint(SpringLayout.NORTH, btnRun, -30, SpringLayout.SOUTH, frmMarkus.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, btnRun, -10, SpringLayout.SOUTH, frmMarkus.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, btnRun, -10, SpringLayout.EAST, frmMarkus.getContentPane());
+		springLayout.putConstraint(SpringLayout.NORTH, btnRun, -30, SpringLayout.SOUTH, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, btnRun, -10, SpringLayout.SOUTH, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, btnRun, -10, SpringLayout.EAST, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, sp, -10, SpringLayout.NORTH, btnRun);
-		springLayout.putConstraint(SpringLayout.WEST, btnRun, 180, SpringLayout.WEST, frmMarkus.getContentPane());
-		frmMarkus.getContentPane().add(btnRun);
+		springLayout.putConstraint(SpringLayout.WEST, btnRun, 180, SpringLayout.WEST, frame.getContentPane());
+		frame.getContentPane().add(btnRun);
 		btnRun.addActionListener(this);
 		
 		JMenuBar menuBar = new JMenuBar();
-		frmMarkus.setJMenuBar(menuBar);
+		frame.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -180,7 +180,7 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
 		
-		frmMarkus.pack();
+		frame.pack();
 	}
 	
 	public void addProjectNode(String name){
