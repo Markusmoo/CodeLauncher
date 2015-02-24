@@ -18,29 +18,34 @@ public class ProjectLoader {
 	
 	public class Project{
 		
-		private String proDir;
+		protected String parentDir;
 		
-		private boolean valid;
+		protected boolean valid;
 		
-		private File zip;
-		private File jar;
-		private ArrayList<File> javaClasses;
+		protected File folder;
+		protected File zip;
+		protected File jar;
+		protected ArrayList<File> javaClasses;
 		
 		public Project(String zipDir){
 			javaClasses = new ArrayList<File>();
-			proDir = getProjectDir(zipDir);
-			valid = unpackageZip(zipDir, proDir);
+			parentDir = getProjectDir(zipDir);
+			valid = unpackageZip(zipDir, parentDir);
 			if(valid) valid = setup();
 		}
 		
-		protected String getProjectDir(String zip){
+		private String getProjectDir(String zip){
 			zip = zip.substring(0, zip.lastIndexOf('.'));
 			new File(zip).mkdirs();
 			return zip;
 		}
 		
+		public String getProjectDir(){
+			return folder.getAbsolutePath();
+		}
+		
 		private boolean setup(){
-			File folder = new File(proDir);
+			folder = new File(parentDir);
 			for(File f : folder.listFiles(new FilenameFilter(){
 
 				@Override

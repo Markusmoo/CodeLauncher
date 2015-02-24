@@ -28,7 +28,6 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import ca.tonsaker.codelauncher.ProjectLoader.Project;
 
-import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -49,6 +48,8 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 	private RSyntaxTextArea textArea;
 	
 	private JButton btnRun;
+	
+	private Project selectedProject;
 	
 	private HashMap<String, DefaultMutableTreeNode> projects = new HashMap<String, DefaultMutableTreeNode>();
 
@@ -197,10 +198,12 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if(src.equals(btnRun)){
-			
+			if(selectedProject != null){
+				selectedProject.getJar();
+			}
 		}
 	}
-
+	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -227,10 +230,9 @@ public class CodeLauncherMain implements ActionListener,TreeSelectionListener {
 			}
 		}
 		
-		System.out.println(selFile);
+		if(selFile != null && selFile.isFile()) selectedProject = selProject; else return;
 		
-		if(selFile != null && selFile.isFile() && selFile.getName().toLowerCase().contains(".java")){
-			System.out.println(selProject.getZip());
+		if(selFile.getName().toLowerCase().contains(".java")){
 			textArea.setText("");
 			try(BufferedReader br = new BufferedReader(new FileReader(selFile))) {
 				for(String line; (line = br.readLine()) != null; ) {
