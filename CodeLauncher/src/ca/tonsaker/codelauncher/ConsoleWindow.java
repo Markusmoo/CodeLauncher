@@ -13,6 +13,8 @@ import ca.tonsaker.codelauncher.ProjectLoader.Project;
 import javax.swing.SpringLayout;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Toolkit;
 
 public class ConsoleWindow implements Runnable{
 	
@@ -26,9 +28,9 @@ public class ConsoleWindow implements Runnable{
 	protected JTextArea textPane;
 	
 	public ConsoleWindow(Project pro, String javaDir) {
-		project = pro;
+		this.project = pro;
 		this.javaDir = javaDir;
-		runThread = new Thread(this);
+		this.runThread = new Thread(this);
 	}
 	
 	/** System("Beep");
@@ -36,19 +38,22 @@ public class ConsoleWindow implements Runnable{
 	 */
 	protected void initialiseGUI(){
 		frame = new JFrame("Console Window for "+project.getJar().getName());
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(ConsoleWindow.class.getResource("/javax/swing/plaf/metal/icons/ocean/warning.png")));
+		frame.setBackground(Color.BLACK);
+		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setLocation(100, 100);
 		frame.setPreferredSize(new Dimension(480, 480));
 		SpringLayout springLayout = new SpringLayout();
 		frame.getContentPane().setLayout(springLayout);
 	
-		textPane = new JTextArea(16,58);
+		textPane = new JTextArea();
+		textPane.setForeground(Color.WHITE);
 		textPane.setBackground(UIManager.getColor("Button.darkShadow"));
-		scroll = new JScrollPane();
+		scroll = new JScrollPane(textPane);
 		springLayout.putConstraint(SpringLayout.NORTH, scroll, 5, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, scroll, 5, SpringLayout.WEST, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, scroll, -5, SpringLayout.SOUTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, scroll, -5, SpringLayout.EAST, frame.getContentPane());
-		scroll.add(textPane);
 		frame.getContentPane().add(scroll);
 	}
 
@@ -74,22 +79,32 @@ public class ConsoleWindow implements Runnable{
 		try {
 			while((outBuff = outRead.read(outBufferChar)) > 0) {
 				outSBuffer.append(outBufferChar, 0, outBuff);
+				this.appendLText(outSBuffer.toString());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		 
 		int errBuff;
 		char[] errBufferChar = new char[1024];
 		StringBuffer errSBuffer = new StringBuffer();
 		try {
 			while((errBuff = errRead.read(errBufferChar)) > 0) {
 				errSBuffer.append(errBufferChar, 0, errBuff);
+				this.appendLText("Error: "+errBufferChar.toString());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void appendText(String text){
+		textPane.append(text);
+	}
+	
+	public void appendLText(String text){
+		this.appendText(text+"\n");
 	}
 
 }
